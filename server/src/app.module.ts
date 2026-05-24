@@ -6,6 +6,7 @@ import { AuthGuard } from './auth/auth.guard';
 import { HealthModule } from './health/health.module';
 import { ProjectsModule } from './projects/projects.module';
 import { SupabaseModule } from './supabase/supabase.module';
+import { TechnologiesModule } from './technologies/technologies.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { SupabaseModule } from './supabase/supabase.module';
     AuthModule,
     HealthModule,
     ProjectsModule,
+    TechnologiesModule,
   ],
   providers: [
     {
