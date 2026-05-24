@@ -273,7 +273,13 @@ export class ProjectsService {
       ),
       technologies: (project.project_technologies ?? [])
         .map((item: any) => item.technologies)
-        .filter(Boolean),
+        .filter(Boolean)
+        .map((technology: any) => ({
+          id: technology.id,
+          name: technology.name,
+          iconClass: technology.icon_url,
+          category: technology.category,
+        })),
     };
   }
 }

@@ -1,0 +1,43 @@
+<section id="experiencia" class="mx-auto max-w-7xl px-5 py-8 sm:px-6 lg:px-8">
+  <div class="surface-panel rounded-lg p-6 lg:p-8">
+    <h2 class="text-sm font-black uppercase tracking-wide text-[#EF4444]">Experiencia profesional</h2>
+
+    <div class="mt-8 space-y-6">
+      @for (item of experience(); track item.id) {
+        <article class="grid gap-6 border-b border-[#1E2128] pb-6 last:border-b-0 last:pb-0 lg:grid-cols-[230px_1fr] lg:items-start">
+          <div>
+            <p class="font-semibold text-[#EF4444]">{{ period(item) }}</p>
+            @if (item.current) {
+              <span class="mt-2 inline-flex rounded bg-[#DC2626]/20 px-3 py-1 text-xs font-bold text-[#EF4444]">Actual</span>
+            }
+          </div>
+          <div>
+            <h3 class="text-xl font-black text-[#F3F4F6]">{{ item.role }} - {{ item.company }}</h3>
+            @if (descriptionLines(item.description).length) {
+              <ul class="mt-3 list-disc space-y-2 pl-5 text-sm leading-7 text-[#9CA3AF]">
+                @for (line of descriptionLines(item.description); track line) {
+                  <li>{{ line }}</li>
+                }
+              </ul>
+            }
+          </div>
+        </article>
+      } @empty {
+        <article class="grid gap-6 lg:grid-cols-[230px_1fr] lg:items-start">
+          <div>
+            <p class="font-semibold text-[#EF4444]">06/2025 - Actualidad</p>
+            <span class="mt-2 inline-flex rounded bg-[#DC2626]/20 px-3 py-1 text-xs font-bold text-[#EF4444]">Actual</span>
+          </div>
+          <div>
+            <h3 class="text-xl font-black text-[#F3F4F6]">Desarrollador Web - COHONDUCAFE</h3>
+            <ul class="mt-3 list-disc space-y-2 pl-5 text-sm leading-7 text-[#9CA3AF]">
+              <li>Migracion de aplicaciones legacy en ASP.NET MVC hacia .NET Core Web API + Angular.</li>
+              <li>Diseno y desarrollo de APIs REST seguras con autenticacion basada en tokens.</li>
+              <li>Construccion de interfaces dinamicas en Angular e integracion con servicios backend.</li>
+            </ul>
+          </div>
+        </article>
+      }
+    </div>
+  </div>
+</section>

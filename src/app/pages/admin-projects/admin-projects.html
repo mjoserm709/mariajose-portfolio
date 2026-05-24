@@ -4,71 +4,38 @@
       <div>
         <p class="text-xs font-black uppercase tracking-[0.18em] text-[#EF4444]">Admin</p>
         <h1 class="mt-2 text-3xl font-black">Proyectos</h1>
+        <p class="mt-2 text-sm text-[#9CA3AF]">
+          {{ selectedProject()?.title || 'Gestiona el contenido visible en el portfolio.' }}
+        </p>
       </div>
       <button class="rounded-md border border-[#1E2128] px-4 py-2 text-sm font-semibold hover:border-[#DC2626]" type="button" (click)="logout()">Salir</button>
     </header>
+
+    <nav class="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <button class="rounded-lg border px-4 py-3 text-left transition" type="button" (click)="showSection('list')" [class.border-[#DC2626]]="activeSection() === 'list'" [class.bg-[#111318]]="activeSection() === 'list'" [class.border-[#1E2128]]="activeSection() !== 'list'">
+        <span class="block text-sm font-black">Listado</span>
+        <span class="mt-1 block text-xs text-[#9CA3AF]">Buscar, seleccionar y eliminar</span>
+      </button>
+      <button class="rounded-lg border px-4 py-3 text-left transition" type="button" (click)="showSection('details')" [class.border-[#DC2626]]="activeSection() === 'details'" [class.bg-[#111318]]="activeSection() === 'details'" [class.border-[#1E2128]]="activeSection() !== 'details'">
+        <span class="block text-sm font-black">Datos</span>
+        <span class="mt-1 block text-xs text-[#9CA3AF]">Crear o editar el proyecto</span>
+      </button>
+      <button class="rounded-lg border px-4 py-3 text-left transition" type="button" (click)="showSection('technologies')" [class.border-[#DC2626]]="activeSection() === 'technologies'" [class.bg-[#111318]]="activeSection() === 'technologies'" [class.border-[#1E2128]]="activeSection() !== 'technologies'">
+        <span class="block text-sm font-black">Tecnologias</span>
+        <span class="mt-1 block text-xs text-[#9CA3AF]">Crear y asociar skills</span>
+      </button>
+      <button class="rounded-lg border px-4 py-3 text-left transition" type="button" (click)="showSection('images')" [class.border-[#DC2626]]="activeSection() === 'images'" [class.bg-[#111318]]="activeSection() === 'images'" [class.border-[#1E2128]]="activeSection() !== 'images'">
+        <span class="block text-sm font-black">Imagenes</span>
+        <span class="mt-1 block text-xs text-[#9CA3AF]">Capturas y previews</span>
+      </button>
+    </nav>
 
     @if (message()) {
       <p class="mt-5 rounded-md border border-[#1E2128] bg-[#111318] px-4 py-3 text-sm text-[#F3F4F6]">{{ message() }}</p>
     }
 
-    <section class="mt-6 grid gap-6 lg:grid-cols-[420px_1fr]">
-      <form class="rounded-lg border border-[#1E2128] bg-[#111318] p-5" [formGroup]="form" (ngSubmit)="save()">
-        <div class="flex items-center justify-between gap-4">
-          <h2 class="text-lg font-black">{{ isEditing() ? 'Editar proyecto' : 'Nuevo proyecto' }}</h2>
-          <button class="text-sm font-semibold text-[#EF4444]" type="button" (click)="resetForm()">Limpiar</button>
-        </div>
-
-        <div class="mt-5 grid gap-4">
-          <label class="grid gap-2 text-sm font-semibold">Titulo
-            <input class="rounded-md border border-[#1E2128] bg-[#0B0B0F] px-3 py-2 outline-none focus:border-[#DC2626]" formControlName="title" />
-          </label>
-
-          <label class="grid gap-2 text-sm font-semibold">Slug
-            <input class="rounded-md border border-[#1E2128] bg-[#0B0B0F] px-3 py-2 outline-none focus:border-[#DC2626]" formControlName="slug" />
-          </label>
-
-          <label class="grid gap-2 text-sm font-semibold">Resumen
-            <textarea class="min-h-20 rounded-md border border-[#1E2128] bg-[#0B0B0F] px-3 py-2 outline-none focus:border-[#DC2626]" formControlName="shortDescription"></textarea>
-          </label>
-
-          <label class="grid gap-2 text-sm font-semibold">Descripcion
-            <textarea class="min-h-28 rounded-md border border-[#1E2128] bg-[#0B0B0F] px-3 py-2 outline-none focus:border-[#DC2626]" formControlName="description"></textarea>
-          </label>
-
-          <div class="grid gap-4 sm:grid-cols-2">
-            <label class="grid gap-2 text-sm font-semibold">GitHub
-              <input class="rounded-md border border-[#1E2128] bg-[#0B0B0F] px-3 py-2 outline-none focus:border-[#DC2626]" formControlName="githubUrl" />
-            </label>
-            <label class="grid gap-2 text-sm font-semibold">Demo
-              <input class="rounded-md border border-[#1E2128] bg-[#0B0B0F] px-3 py-2 outline-none focus:border-[#DC2626]" formControlName="demoUrl" />
-            </label>
-          </div>
-
-          <div class="grid gap-4 sm:grid-cols-[1fr_120px]">
-            <label class="grid gap-2 text-sm font-semibold">Estado
-              <select class="rounded-md border border-[#1E2128] bg-[#0B0B0F] px-3 py-2 outline-none focus:border-[#DC2626]" formControlName="status">
-                <option value="published">Publicado</option>
-                <option value="draft">Borrador</option>
-              </select>
-            </label>
-            <label class="grid gap-2 text-sm font-semibold">Orden
-              <input class="rounded-md border border-[#1E2128] bg-[#0B0B0F] px-3 py-2 outline-none focus:border-[#DC2626]" type="number" formControlName="sortOrder" />
-            </label>
-          </div>
-
-          <label class="flex items-center gap-3 text-sm font-semibold">
-            <input class="h-4 w-4 accent-[#DC2626]" type="checkbox" formControlName="featured" />
-            Destacado
-          </label>
-
-          <button class="rounded-md bg-[#DC2626] px-4 py-3 text-sm font-bold text-white transition hover:bg-[#B91C1C] disabled:cursor-not-allowed disabled:opacity-60" type="submit" [disabled]="isSaving()">
-            {{ isSaving() ? 'Guardando...' : 'Guardar proyecto' }}
-          </button>
-        </div>
-      </form>
-
-      <div class="rounded-lg border border-[#1E2128] bg-[#111318]">
+    <section class="mt-6 rounded-lg border border-[#1E2128] bg-[#111318]">
+      @if (activeSection() === 'list') {
         <div class="border-b border-[#1E2128] p-5">
           <h2 class="text-lg font-black">Listado</h2>
           <p class="mt-1 text-sm text-[#9CA3AF]">{{ isLoading() ? 'Cargando...' : projects().length + ' proyectos' }}</p>
@@ -86,8 +53,16 @@
                   }
                 </div>
                 <p class="mt-2 text-sm text-[#9CA3AF]">{{ project.shortDescription || project.slug }}</p>
+                <div class="mt-3 flex flex-wrap gap-2">
+                  @for (technology of project.technologies ?? []; track technology.id) {
+                    <span class="rounded bg-[#1E2128] px-2 py-1 text-xs text-[#F3F4F6]">{{ technology.name }}</span>
+                  }
+                  @if (project.images?.length) {
+                    <span class="rounded bg-[#1E2128] px-2 py-1 text-xs text-[#9CA3AF]">{{ project.images?.length }} imagenes</span>
+                  }
+                </div>
               </div>
-              <div class="flex gap-2">
+              <div class="flex flex-wrap gap-2">
                 <button class="rounded-md border border-[#1E2128] px-3 py-2 text-sm font-semibold hover:border-[#DC2626]" type="button" (click)="selectProject(project)">Editar</button>
                 <button class="rounded-md border border-[#7F1D1D] px-3 py-2 text-sm font-semibold text-[#FCA5A5] hover:border-[#DC2626]" type="button" (click)="remove(project)">Eliminar</button>
               </div>
@@ -96,7 +71,169 @@
             <p class="p-5 text-sm text-[#9CA3AF]">No hay proyectos registrados.</p>
           }
         </div>
-      </div>
+      }
+
+      @if (activeSection() === 'details') {
+        <form class="p-5" [formGroup]="form" (ngSubmit)="save()">
+          <div class="flex flex-col gap-3 border-b border-[#1E2128] pb-5 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h2 class="text-lg font-black">{{ isEditing() ? 'Editar proyecto' : 'Nuevo proyecto' }}</h2>
+              <p class="mt-1 text-sm text-[#9CA3AF]">Define titulo, enlaces, estado y orden de publicacion.</p>
+            </div>
+            <button class="text-sm font-semibold text-[#EF4444]" type="button" (click)="resetForm()">Nuevo proyecto</button>
+          </div>
+
+          <div class="mt-5 grid gap-5 lg:grid-cols-2">
+            <label class="grid gap-2 text-sm font-semibold">Titulo
+              <input class="rounded-md border border-[#1E2128] bg-[#0B0B0F] px-3 py-2 outline-none focus:border-[#DC2626]" formControlName="title" />
+            </label>
+
+            <label class="grid gap-2 text-sm font-semibold">Slug
+              <input class="rounded-md border border-[#1E2128] bg-[#0B0B0F] px-3 py-2 outline-none focus:border-[#DC2626]" formControlName="slug" />
+            </label>
+
+            <label class="grid gap-2 text-sm font-semibold lg:col-span-2">Resumen
+              <textarea class="min-h-20 rounded-md border border-[#1E2128] bg-[#0B0B0F] px-3 py-2 outline-none focus:border-[#DC2626]" formControlName="shortDescription"></textarea>
+            </label>
+
+            <label class="grid gap-2 text-sm font-semibold lg:col-span-2">Descripcion
+              <textarea class="min-h-32 rounded-md border border-[#1E2128] bg-[#0B0B0F] px-3 py-2 outline-none focus:border-[#DC2626]" formControlName="description"></textarea>
+            </label>
+
+            <label class="grid gap-2 text-sm font-semibold">GitHub
+              <input class="rounded-md border border-[#1E2128] bg-[#0B0B0F] px-3 py-2 outline-none focus:border-[#DC2626]" formControlName="githubUrl" />
+            </label>
+
+            <label class="grid gap-2 text-sm font-semibold">Demo
+              <input class="rounded-md border border-[#1E2128] bg-[#0B0B0F] px-3 py-2 outline-none focus:border-[#DC2626]" formControlName="demoUrl" />
+            </label>
+
+            <label class="grid gap-2 text-sm font-semibold">Estado
+              <select class="rounded-md border border-[#1E2128] bg-[#0B0B0F] px-3 py-2 outline-none focus:border-[#DC2626]" formControlName="status">
+                <option value="published">Publicado</option>
+                <option value="draft">Borrador</option>
+              </select>
+            </label>
+
+            <label class="grid gap-2 text-sm font-semibold">Orden
+              <input class="rounded-md border border-[#1E2128] bg-[#0B0B0F] px-3 py-2 outline-none focus:border-[#DC2626]" type="number" formControlName="sortOrder" />
+            </label>
+
+            <label class="flex items-center gap-3 text-sm font-semibold lg:col-span-2">
+              <input class="h-4 w-4 accent-[#DC2626]" type="checkbox" formControlName="featured" />
+              Destacado
+            </label>
+          </div>
+
+          <div class="mt-6 flex flex-wrap gap-3">
+            <button class="rounded-md bg-[#DC2626] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#B91C1C] disabled:cursor-not-allowed disabled:opacity-60" type="submit" [disabled]="isSaving()">
+              {{ isSaving() ? 'Guardando...' : 'Guardar proyecto' }}
+            </button>
+            <button class="rounded-md border border-[#1E2128] px-5 py-3 text-sm font-semibold hover:border-[#DC2626]" type="button" (click)="showSection('list')">Volver al listado</button>
+          </div>
+        </form>
+      }
+
+      @if (activeSection() === 'technologies') {
+        <div class="grid gap-6 p-5 lg:grid-cols-2">
+          <section>
+            <h2 class="text-lg font-black">Crear tecnologia</h2>
+            <p class="mt-1 text-sm text-[#9CA3AF]">Registra una tecnologia reutilizable en proyectos.</p>
+            <form class="mt-5 grid gap-3" [formGroup]="newTechnologyForm" (ngSubmit)="createTechnology()">
+              <input class="rounded-md border border-[#1E2128] bg-[#0B0B0F] px-3 py-2 outline-none focus:border-[#DC2626]" formControlName="name" placeholder="Nombre" />
+              <input class="rounded-md border border-[#1E2128] bg-[#0B0B0F] px-3 py-2 outline-none focus:border-[#DC2626]" formControlName="category" placeholder="Categoria" />
+
+              <div class="rounded-md border border-[#1E2128] bg-[#0B0B0F] p-3">
+                <div class="flex items-center gap-3">
+                  <div class="grid h-12 w-12 place-items-center rounded border border-[#1E2128] text-3xl">
+                    @if (newTechnologyForm.value.iconClass) {
+                      <i [class]="newTechnologyForm.value.iconClass"></i>
+                    } @else {
+                      <span class="text-sm font-black text-[#EF4444]">MJ</span>
+                    }
+                  </div>
+                  <div class="min-w-0">
+                    <p class="text-sm font-black">Icono Devicon</p>
+                    <p class="truncate text-xs text-[#9CA3AF]">{{ newTechnologyForm.value.iconClass || 'Selecciona un icono del catalogo' }}</p>
+                  </div>
+                </div>
+
+                <input class="mt-3 w-full rounded-md border border-[#1E2128] bg-[#111318] px-3 py-2 outline-none focus:border-[#DC2626]" [value]="iconSearch()" (input)="iconSearch.set($any($event.target).value)" placeholder="Buscar icono" />
+
+                <div class="mt-3 grid max-h-72 grid-cols-3 gap-2 overflow-y-auto pr-1 sm:grid-cols-4">
+                  @for (icon of filteredDevicons(); track icon.className) {
+                    <button class="grid gap-2 rounded-md border border-[#1E2128] bg-[#111318] px-2 py-3 text-center transition hover:border-[#DC2626]" type="button" (click)="selectIcon(icon.className)" [class.border-[#DC2626]]="newTechnologyForm.value.iconClass === icon.className">
+                      <i class="text-3xl" [class]="icon.className"></i>
+                      <span class="truncate text-xs text-[#9CA3AF]">{{ icon.name }}</span>
+                    </button>
+                  }
+                </div>
+
+                <input class="mt-3 w-full rounded-md border border-[#1E2128] bg-[#111318] px-3 py-2 text-xs text-[#9CA3AF] outline-none focus:border-[#DC2626]" formControlName="iconClass" placeholder="Clase Devicon" />
+              </div>
+
+              <button class="rounded-md border border-[#1E2128] px-4 py-2 text-sm font-semibold hover:border-[#DC2626]" type="submit">Crear tecnologia</button>
+            </form>
+          </section>
+
+          <section>
+            <h2 class="text-lg font-black">Asociar a proyecto</h2>
+            <p class="mt-1 text-sm text-[#9CA3AF]">{{ selectedProject()?.title || 'Selecciona un proyecto desde el listado.' }}</p>
+            <form class="mt-5 grid gap-3" [formGroup]="technologyForm" (ngSubmit)="linkTechnology()">
+              <select class="rounded-md border border-[#1E2128] bg-[#0B0B0F] px-3 py-2 outline-none focus:border-[#DC2626]" formControlName="technologyId">
+                <option value="">Seleccionar tecnologia</option>
+                @for (technology of technologies(); track technology.id) {
+                  <option [value]="technology.id">{{ technology.name }}</option>
+                }
+              </select>
+              <button class="rounded-md bg-[#DC2626] px-4 py-2 text-sm font-bold text-white hover:bg-[#B91C1C]" type="submit">Asociar tecnologia</button>
+            </form>
+
+            <div class="mt-5 flex flex-wrap gap-2">
+              @for (technology of selectedProject()?.technologies ?? []; track technology.id) {
+                <button class="rounded bg-[#1E2128] px-3 py-2 text-xs font-semibold text-[#F3F4F6] hover:bg-[#3A1D1D]" type="button" (click)="unlinkTechnology(technology.id)">
+                  @if (technology.iconClass) {
+                    <i [class]="technology.iconClass"></i>
+                  }
+                  {{ technology.name }} ×
+                </button>
+              } @empty {
+                <p class="text-sm text-[#9CA3AF]">Este proyecto no tiene tecnologias asociadas.</p>
+              }
+            </div>
+          </section>
+        </div>
+      }
+
+      @if (activeSection() === 'images') {
+        <div class="grid gap-6 p-5 lg:grid-cols-[420px_1fr]">
+          <section>
+            <h2 class="text-lg font-black">Agregar imagen</h2>
+            <p class="mt-1 text-sm text-[#9CA3AF]">{{ selectedProject()?.title || 'Selecciona un proyecto desde el listado.' }}</p>
+            <form class="mt-5 grid gap-3" [formGroup]="imageForm" (ngSubmit)="addImage()">
+              <input class="rounded-md border border-[#1E2128] bg-[#0B0B0F] px-3 py-2 outline-none focus:border-[#DC2626]" formControlName="imageUrl" placeholder="https://..." />
+              <input class="rounded-md border border-[#1E2128] bg-[#0B0B0F] px-3 py-2 outline-none focus:border-[#DC2626]" formControlName="altText" placeholder="Texto alternativo" />
+              <input class="rounded-md border border-[#1E2128] bg-[#0B0B0F] px-3 py-2 outline-none focus:border-[#DC2626]" type="number" formControlName="sortOrder" placeholder="Orden" />
+              <button class="rounded-md bg-[#DC2626] px-4 py-2 text-sm font-bold text-white hover:bg-[#B91C1C]" type="submit">Agregar imagen</button>
+            </form>
+          </section>
+
+          <section>
+            <h2 class="text-lg font-black">Imagenes del proyecto</h2>
+            <div class="mt-5 grid gap-3">
+              @for (image of selectedProject()?.images ?? []; track image.id) {
+                <article class="grid grid-cols-[88px_1fr_auto] items-center gap-3 rounded-md border border-[#1E2128] bg-[#0B0B0F] p-2">
+                  <img class="h-16 w-22 rounded object-cover" [src]="imageUrl(image)" [alt]="imageAlt(image)" />
+                  <p class="min-w-0 truncate text-sm text-[#9CA3AF]">{{ imageAlt(image) }}</p>
+                  <button class="rounded border border-[#7F1D1D] px-2 py-1 text-xs font-semibold text-[#FCA5A5]" type="button" (click)="removeImage(image.id)">Eliminar</button>
+                </article>
+              } @empty {
+                <p class="text-sm text-[#9CA3AF]">Este proyecto no tiene imagenes.</p>
+              }
+            </div>
+          </section>
+        </div>
+      }
     </section>
   </div>
 </main>

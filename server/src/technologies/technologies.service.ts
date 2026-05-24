@@ -22,7 +22,7 @@ export class TechnologiesService {
       data?.map((technology) => ({
         id: technology.id,
         name: technology.name,
-        iconUrl: technology.icon_url,
+        iconClass: technology.icon_url,
         category: technology.category,
       })) ?? []
     );
@@ -34,7 +34,7 @@ export class TechnologiesService {
       .from('technologies')
       .insert({
         name: createTechnologyDto.name,
-        icon_url: createTechnologyDto.iconUrl,
+        icon_url: createTechnologyDto.iconClass,
         category: createTechnologyDto.category,
       })
       .select('id, name, icon_url, category')
@@ -47,7 +47,7 @@ export class TechnologiesService {
     return {
       id: data.id,
       name: data.name,
-      iconUrl: data.icon_url,
+      iconClass: data.icon_url,
       category: data.category,
     };
   }

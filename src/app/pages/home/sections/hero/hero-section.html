@@ -1,0 +1,40 @@
+<section id="inicio" class="relative">
+  <div class="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(243,244,246,0.025)_1px,transparent_1px),linear-gradient(90deg,rgba(243,244,246,0.025)_1px,transparent_1px)] bg-[size:72px_72px]"></div>
+  <div class="mx-auto grid max-w-7xl gap-12 px-5 py-14 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:px-8 lg:py-24">
+    <div class="relative z-10 min-w-0">
+      <p class="text-xs font-bold uppercase tracking-[0.18em] text-[#EF4444] sm:tracking-[0.22em]">{{ profile()?.title || 'Fullstack Developer' }}</p>
+      <h1 class="mt-6 max-w-3xl break-words text-4xl font-black leading-[1.04] tracking-tight text-[#F3F4F6] sm:text-6xl lg:text-7xl">
+        <span class="block">{{ firstName() }}</span>
+        <span class="block">{{ middleName() }}</span>
+        <span class="block text-[#EF4444]">{{ lastName() }}</span>
+      </h1>
+      <p class="mt-7 max-w-2xl break-words text-base leading-8 text-[#9CA3AF] sm:text-lg">
+        {{ profile()?.bio || 'Ingeniera en Sistemas y Fullstack Developer especializada en .NET Core, Angular y SQL Server. Construyo APIs REST, frontends dinamicos y soluciones empresariales escalables orientadas a negocio.' }}
+      </p>
+      <div class="mt-9 grid gap-4 min-[420px]:flex min-[420px]:flex-wrap">
+        <a class="inline-flex items-center justify-center rounded-md bg-[#DC2626] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#B91C1C]" [href]="profile()?.cvUrl || 'mailto:mjoserm95@gmail.com'">Descargar CV</a>
+        <a class="inline-flex items-center justify-center rounded-md border border-[#1E2128] bg-[#111318] px-5 py-3 text-sm font-semibold text-[#F3F4F6] transition hover:border-[#DC2626]" [href]="'mailto:' + (profile()?.email || 'mjoserm95@gmail.com')">Contactar</a>
+      </div>
+      <div class="mt-9 flex gap-5 text-sm font-semibold text-[#9CA3AF]">
+        <a class="transition hover:text-[#EF4444]" [href]="profile()?.githubUrl || 'https://github.com/'" target="_blank" rel="noopener">GitHub</a>
+        <a class="transition hover:text-[#EF4444]" [href]="profile()?.linkedinUrl || 'https://linkedin.com/'" target="_blank" rel="noopener">LinkedIn</a>
+        <a class="transition hover:text-[#EF4444]" [href]="'mailto:' + (profile()?.email || 'mjoserm95@gmail.com')">Email</a>
+      </div>
+    </div>
+
+    <div class="relative z-10 mx-auto w-full max-w-md pt-8 lg:pt-0">
+      <div class="absolute -right-10 top-12 hidden h-72 w-52 bg-[radial-gradient(circle,#DC2626_1px,transparent_1.5px)] bg-[size:22px_22px] opacity-70 lg:block"></div>
+      <div class="red-glow relative overflow-hidden rounded-lg border border-[#1E2128] bg-[#111318]">
+        <div class="aspect-[4/5] bg-[radial-gradient(circle_at_70%_30%,rgba(220,38,38,0.35),transparent_35%),linear-gradient(140deg,#1E2128,#0B0B0F)]">
+          <div class="flex h-full items-end justify-center px-8 pb-0">
+            <div class="h-[86%] w-[72%] rounded-t-[42%] border border-[#1E2128] bg-[linear-gradient(180deg,#2A2D35,#111318_62%,#0B0B0F)] shadow-2xl"></div>
+          </div>
+        </div>
+      </div>
+      <div class="surface-panel mt-4 rounded-lg p-5 sm:absolute sm:-bottom-8 sm:left-auto sm:right-[-28px] sm:mt-0 sm:w-72">
+        <p class="text-2xl font-black text-[#F3F4F6]">+3 anos</p>
+        <p class="mt-1 text-sm leading-6 text-[#9CA3AF]">Desarrollo fullstack, migracion legacy, APIs REST, SQL Server y automatizacion de procesos.</p>
+      </div>
+    </div>
+  </div>
+</section>

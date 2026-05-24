@@ -4,6 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { AuthGuard } from './auth/auth.guard';
 import { HealthModule } from './health/health.module';
+import { PortfolioModule } from './portfolio/portfolio.module';
 import { ProjectsModule } from './projects/projects.module';
 import { SupabaseModule } from './supabase/supabase.module';
 import { TechnologiesModule } from './technologies/technologies.module';
@@ -17,6 +18,7 @@ import { TechnologiesModule } from './technologies/technologies.module';
     SupabaseModule,
     AuthModule,
     HealthModule,
+    PortfolioModule,
     ProjectsModule,
     TechnologiesModule,
   ],
