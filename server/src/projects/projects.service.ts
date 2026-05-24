@@ -7,7 +7,7 @@ export class ProjectsService {
   constructor(private readonly supabaseService: SupabaseService) {}
 
   async findAll() {
-    const { data, error } = await this.supabaseService.client
+    const { data, error } = await this.supabaseService.adminClient
       .schema('portfolio')
       .from('projects')
       .select(
@@ -52,7 +52,7 @@ export class ProjectsService {
   }
 
   async findBySlug(slug: string) {
-    const { data, error } = await this.supabaseService.client
+    const { data, error } = await this.supabaseService.adminClient
       .schema('portfolio')
       .from('projects')
       .select(
@@ -96,7 +96,7 @@ export class ProjectsService {
   }
 
   async create(createProjectDto: CreateProjectDto) {
-    const { data, error } = await this.supabaseService.client
+    const { data, error } = await this.supabaseService.adminClient
       .schema('portfolio')
       .from('projects')
       .insert({
