@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: portfolio-api
+    env: node
+    plan: free
+    buildCommand: npm ci && npm run build:api
+    startCommand: npm run start:api:prod
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: FRONTEND_URL
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
