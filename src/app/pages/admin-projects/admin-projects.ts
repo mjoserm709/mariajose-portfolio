@@ -2,6 +2,8 @@ import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/auth.service';
+import { ExperienceService } from '../../core/experience.service';
+import { Experience } from '../../core/portfolio.service';
 import { Project, ProjectsService, Technology } from '../../core/projects.service';
 import { ToastService } from '../../shared/toast/toast.service';
 
@@ -12,20 +14,27 @@ import { ToastService } from '../../shared/toast/toast.service';
 })
 export class AdminProjectsComponent implements OnInit {
   private readonly authService = inject(AuthService);
+  private readonly experienceService = inject(ExperienceService);
   private readonly formBuilder = inject(FormBuilder);
   private readonly projectsService = inject(ProjectsService);
   private readonly router = inject(Router);
   private readonly toastService = inject(ToastService);
 
   readonly projects = signal<Project[]>([]);
+  readonly experience = signal<Experience[]>([]);
   readonly technologies = signal<Technology[]>([]);
+  readonly selectedExperienceId = signal<string | null>(null);
   readonly selectedProjectId = signal<string | null>(null);
-  readonly activeSection = signal<'list' | 'details' | 'technologies' | 'images'>('list');
+  readonly activeModule = signal<'projects' | 'experience'>('projects');
+  readonly activeSection = signal<
+    'list' | 'details' | 'technologies' | 'images' | 'experience-list' | 'experience-form'
+  >('list');
   readonly isLoading = signal(false);
   readonly isSaving = signal(false);
   readonly message = signal('');
   readonly iconSearch = signal('');
   readonly isEditing = computed(() => Boolean(this.selectedProjectId()));
+  readonly isEditingExperience = computed(() => Boolean(this.selectedExperienceId()));
   readonly selectedProject = computed(
     () => this.projects().find((project) => project.id === this.selectedProjectId()) ?? null,
   );
@@ -97,7 +106,19 @@ export class AdminProjectsComponent implements OnInit {
     category: [''],
   });
 
+  readonly experienceForm = this.formBuilder.nonNullable.group({
+    company: ['', [Validators.required]],
+    role: ['', [Validators.required]],
+    description: [''],
+    startDate: [''],
+    endDate: [''],
+    current: [false],
+    location: [''],
+    sortOrder: [0],
+  });
+
   ngOnInit() {
+    this.loadExperience();
     this.loadProjects();
     this.loadTechnologies();
   }
@@ -121,6 +142,13 @@ export class AdminProjectsComponent implements OnInit {
     this.projectsService.findTechnologies().subscribe({
       next: (technologies) => this.technologies.set(technologies),
       error: () => this.toastService.error('Error al cargar', 'No se pudieron obtener las tecnologias.'),
+    });
+  }
+
+  loadExperience() {
+    this.experienceService.findAllAdmin().subscribe({
+      next: (experience) => this.experience.set(experience),
+      error: () => this.toastService.error('Error al cargar', 'No se pudo obtener la experiencia.'),
     });
   }
 
@@ -150,7 +178,11 @@ export class AdminProjectsComponent implements OnInit {
     this.technologyForm.reset({ technologyId: '' });
   }
 
-  showSection(section: 'list' | 'details' | 'technologies' | 'images') {
+  showSection(
+    section: 'list' | 'details' | 'technologies' | 'images' | 'experience-list' | 'experience-form',
+  ) {
+    this.activeModule.set(section.startsWith('experience') ? 'experience' : 'projects');
+
     if ((section === 'technologies' || section === 'images') && !this.selectedProjectId()) {
       this.toastService.info('Informacion', 'Selecciona o crea un proyecto primero.');
       this.activeSection.set('details');
@@ -158,6 +190,11 @@ export class AdminProjectsComponent implements OnInit {
     }
 
     this.activeSection.set(section);
+  }
+
+  showModule(module: 'projects' | 'experience') {
+    this.activeModule.set(module);
+    this.activeSection.set(module === 'projects' ? 'list' : 'experience-list');
   }
 
   save() {
@@ -319,6 +356,96 @@ export class AdminProjectsComponent implements OnInit {
 
   selectIcon(iconClass: string) {
     this.newTechnologyForm.patchValue({ iconClass });
+  }
+
+  selectExperience(experience: Experience) {
+    this.selectedExperienceId.set(experience.id);
+    this.activeModule.set('experience');
+    this.experienceForm.patchValue({
+      company: experience.company,
+      role: experience.role,
+      description: experience.description ?? '',
+      startDate: experience.startDate ?? '',
+      endDate: experience.endDate ?? '',
+      current: experience.current,
+      location: experience.location ?? '',
+      sortOrder: experience.sortOrder,
+    });
+    this.activeSection.set('experience-form');
+  }
+
+  resetExperienceForm() {
+    this.selectedExperienceId.set(null);
+    this.activeModule.set('experience');
+    this.activeSection.set('experience-form');
+    this.experienceForm.reset({
+      company: '',
+      role: '',
+      description: '',
+      startDate: '',
+      endDate: '',
+      current: false,
+      location: '',
+      sortOrder: 0,
+    });
+  }
+
+  saveExperience() {
+    if (this.experienceForm.invalid) {
+      this.experienceForm.markAllAsTouched();
+      this.toastService.warning('Atencion', 'Empresa y rol son requeridos.');
+      return;
+    }
+
+    const selectedId = this.selectedExperienceId();
+    const payload = this.experienceForm.getRawValue();
+    const request = selectedId
+      ? this.experienceService.update(selectedId, payload)
+      : this.experienceService.create(payload);
+
+    this.isSaving.set(true);
+
+    request.subscribe({
+      next: () => {
+        this.toastService.success(
+          'Exito',
+          selectedId ? 'Experiencia actualizada correctamente.' : 'Experiencia creada correctamente.',
+        );
+        this.isSaving.set(false);
+        this.resetExperienceForm();
+        this.loadExperience();
+      },
+      error: () => {
+        this.toastService.error('Error al guardar', 'No se pudo guardar la experiencia.');
+        this.isSaving.set(false);
+      },
+    });
+  }
+
+  removeExperience(experience: Experience) {
+    const confirmed = window.confirm(`Eliminar ${experience.role} en ${experience.company}?`);
+
+    if (!confirmed) {
+      return;
+    }
+
+    this.experienceService.remove(experience.id).subscribe({
+      next: () => {
+        this.toastService.success('Exito', 'Experiencia eliminada correctamente.');
+        if (this.selectedExperienceId() === experience.id) {
+          this.resetExperienceForm();
+        }
+        this.loadExperience();
+      },
+      error: () => this.toastService.error('Error al eliminar', 'No se pudo eliminar la experiencia.'),
+    });
+  }
+
+  experiencePeriod(experience: Experience) {
+    const start = experience.startDate || 'Sin inicio';
+    const end = experience.current ? 'Actualidad' : experience.endDate || 'Sin fin';
+
+    return `${start} - ${end}`;
   }
 
   imageUrl(image: NonNullable<Project['images']>[number]) {

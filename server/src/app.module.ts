@@ -3,6 +3,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { AuthGuard } from './auth/auth.guard';
+import { ExperienceModule } from './experience/experience.module';
 import { HealthModule } from './health/health.module';
 import { PortfolioModule } from './portfolio/portfolio.module';
 import { ProjectsModule } from './projects/projects.module';
@@ -17,6 +18,7 @@ import { TechnologiesModule } from './technologies/technologies.module';
     }),
     SupabaseModule,
     AuthModule,
+    ExperienceModule,
     HealthModule,
     PortfolioModule,
     ProjectsModule,

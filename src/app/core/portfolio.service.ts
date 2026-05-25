@@ -53,7 +53,7 @@ export class PortfolioService {
   }
 
   getExperience() {
-    return this.http.get<Experience[]>('/api/portfolio/experience');
+    return this.http.get<Experience[]>('/api/experience');
   }
 
   getSkills() {
