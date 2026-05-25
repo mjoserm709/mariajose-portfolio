@@ -12,7 +12,7 @@
       }
 
       @for (project of projects(); track project.id) {
-        <article class="overflow-hidden rounded-lg border border-[#1E2128] bg-[#111318] transition hover:border-[#DC2626]/70">
+        <article appGlowCard class="overflow-hidden rounded-lg border border-[#1E2128] bg-[#111318] transition hover:border-[#DC2626]/70">
           @if (projectImage(project)) {
             <img class="h-48 w-full object-cover" [src]="projectImage(project)" [alt]="project.title" />
           }

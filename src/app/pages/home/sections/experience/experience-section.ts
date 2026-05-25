@@ -1,8 +1,10 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { Experience, PortfolioService } from '../../../../core/portfolio.service';
+import { GlowCardDirective } from '../../../../shared/animations/glow-card.directive';
 
 @Component({
   selector: 'app-experience-section',
+  imports: [GlowCardDirective],
   templateUrl: './experience-section.html',
 })
 export class ExperienceSectionComponent implements OnInit {

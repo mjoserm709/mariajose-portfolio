@@ -1,14 +1,14 @@
 <section class="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
   <div class="grid gap-4 sm:grid-cols-3">
-    <article class="surface-panel rounded-lg p-5">
+    <article appGlowCard class="surface-panel rounded-lg p-5">
       <p class="text-xs font-black uppercase tracking-wide text-[#EF4444]">Ubicacion</p>
       <p class="mt-2 text-sm text-[#F3F4F6]">{{ profile()?.location || 'Honduras' }}</p>
     </article>
-    <article class="surface-panel rounded-lg p-5">
+    <article appGlowCard class="surface-panel rounded-lg p-5">
       <p class="text-xs font-black uppercase tracking-wide text-[#EF4444]">Email</p>
       <a class="mt-2 block break-words text-sm text-[#F3F4F6] hover:text-[#EF4444]" [href]="'mailto:' + (profile()?.email || 'mjoserm95@gmail.com')">{{ profile()?.email || 'mjoserm95@gmail.com' }}</a>
     </article>
-    <article class="surface-panel rounded-lg p-5">
+    <article appGlowCard class="surface-panel rounded-lg p-5">
       <p class="text-xs font-black uppercase tracking-wide text-[#EF4444]">Telefono</p>
       <a class="mt-2 block text-sm text-[#F3F4F6] hover:text-[#EF4444]" [href]="'tel:' + (profile()?.whatsapp || '+50489126351')">{{ profile()?.whatsapp || '+504 89126351' }}</a>
     </article>

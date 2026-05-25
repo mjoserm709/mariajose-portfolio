@@ -398,7 +398,7 @@ export class AdminProjectsComponent implements OnInit {
     }
 
     const selectedId = this.selectedExperienceId();
-    const payload = this.experienceForm.getRawValue();
+    const payload = this.toExperiencePayload();
     const request = selectedId
       ? this.experienceService.update(selectedId, payload)
       : this.experienceService.create(payload);
@@ -446,6 +446,21 @@ export class AdminProjectsComponent implements OnInit {
     const end = experience.current ? 'Actualidad' : experience.endDate || 'Sin fin';
 
     return `${start} - ${end}`;
+  }
+
+  private toExperiencePayload() {
+    const payload = this.experienceForm.getRawValue();
+
+    return {
+      company: payload.company,
+      role: payload.role,
+      description: payload.description || undefined,
+      startDate: payload.startDate || undefined,
+      endDate: payload.current ? undefined : payload.endDate || undefined,
+      current: payload.current,
+      location: payload.location || undefined,
+      sortOrder: payload.sortOrder,
+    };
   }
 
   imageUrl(image: NonNullable<Project['images']>[number]) {

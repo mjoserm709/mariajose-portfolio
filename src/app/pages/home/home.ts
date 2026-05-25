@@ -1,4 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
+import { RevealDirective } from '../../shared/animations/reveal.directive';
 import { AboutSectionComponent } from './sections/about/about-section';
 import { ContactCtaSectionComponent } from './sections/contact-cta/contact-cta-section';
 import { EducationSectionComponent } from './sections/education/education-section';
@@ -20,6 +21,7 @@ import { HomeDataService } from './home-data.service';
     HeroSectionComponent,
     ProjectsSectionComponent,
     QuickContactSectionComponent,
+    RevealDirective,
     SiteHeaderComponent,
     TechnologiesSectionComponent,
   ],

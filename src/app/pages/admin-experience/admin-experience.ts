@@ -89,7 +89,7 @@ export class AdminExperienceComponent implements OnInit {
     }
 
     const selectedId = this.selectedExperienceId();
-    const payload = this.form.getRawValue();
+    const payload = this.toExperiencePayload();
     const request = selectedId
       ? this.experienceService.update(selectedId, payload)
       : this.experienceService.create(payload);
@@ -143,5 +143,20 @@ export class AdminExperienceComponent implements OnInit {
     this.authService.logout();
     this.toastService.info('Informacion', 'Sesion cerrada.');
     void this.router.navigate(['/admin/login']);
+  }
+
+  private toExperiencePayload() {
+    const payload = this.form.getRawValue();
+
+    return {
+      company: payload.company,
+      role: payload.role,
+      description: payload.description || undefined,
+      startDate: payload.startDate || undefined,
+      endDate: payload.current ? undefined : payload.endDate || undefined,
+      current: payload.current,
+      location: payload.location || undefined,
+      sortOrder: payload.sortOrder,
+    };
   }
 }

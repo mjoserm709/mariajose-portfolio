@@ -1,20 +1,20 @@
 <section id="habilidades" class="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
-  <div class="surface-panel rounded-lg p-4 sm:p-6">
+  <div appGlowCard class="surface-panel rounded-lg p-4 sm:p-6">
     <div class="grid gap-6 lg:grid-cols-[160px_1fr] lg:items-center">
       <h2 class="text-sm font-black uppercase tracking-wide text-[#EF4444]">Tecnologias</h2>
       <div class="min-w-0">
         <div class="grid grid-cols-2 items-center gap-4 text-center min-[420px]:grid-cols-3 sm:grid-cols-5 lg:grid-cols-9">
           @for (technology of technologies(); track technology.id) {
-            <div class="tech-strip-item">
+            <div class="tech-strip-item rounded-md p-2">
               @if (technology.iconClass) {
                 <i class="tech-icon" [class]="technology.iconClass"></i>
               }
               <p class="mt-3 text-sm text-[#9CA3AF]">{{ technology.name }}</p>
             </div>
           } @empty {
-            <div class="tech-strip-item"><i class="devicon-dotnetcore-plain colored tech-icon"></i><p class="mt-3 text-sm text-[#9CA3AF]">.NET Core</p></div>
-            <div class="tech-strip-item"><i class="devicon-angularjs-plain colored tech-icon"></i><p class="mt-3 text-sm text-[#9CA3AF]">Angular</p></div>
-            <div class="tech-strip-item"><i class="devicon-postgresql-plain colored tech-icon"></i><p class="mt-3 text-sm text-[#9CA3AF]">PostgreSQL</p></div>
+            <div class="tech-strip-item rounded-md p-2"><i class="devicon-dotnetcore-plain colored tech-icon"></i><p class="mt-3 text-sm text-[#9CA3AF]">.NET Core</p></div>
+            <div class="tech-strip-item rounded-md p-2"><i class="devicon-angularjs-plain colored tech-icon"></i><p class="mt-3 text-sm text-[#9CA3AF]">Angular</p></div>
+            <div class="tech-strip-item rounded-md p-2"><i class="devicon-postgresql-plain colored tech-icon"></i><p class="mt-3 text-sm text-[#9CA3AF]">PostgreSQL</p></div>
           }
         </div>
       </div>

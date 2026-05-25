@@ -1,9 +1,11 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { PortfolioService } from '../../../../core/portfolio.service';
 import { Project } from '../../../../core/projects.service';
+import { GlowCardDirective } from '../../../../shared/animations/glow-card.directive';
 
 @Component({
   selector: 'app-projects-section',
+  imports: [GlowCardDirective],
   templateUrl: './projects-section.html',
 })
 export class ProjectsSectionComponent implements OnInit {
