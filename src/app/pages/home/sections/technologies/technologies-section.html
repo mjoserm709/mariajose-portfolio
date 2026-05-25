@@ -1,9 +1,9 @@
-<section id="habilidades" class="mx-auto max-w-7xl px-5 py-8 sm:px-6 lg:px-8">
-  <div class="surface-panel rounded-lg p-6">
+<section id="habilidades" class="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
+  <div class="surface-panel rounded-lg p-4 sm:p-6">
     <div class="grid gap-6 lg:grid-cols-[160px_1fr] lg:items-center">
       <h2 class="text-sm font-black uppercase tracking-wide text-[#EF4444]">Tecnologias</h2>
       <div class="min-w-0">
-        <div class="grid grid-cols-3 items-center gap-5 text-center sm:grid-cols-5 lg:grid-cols-9">
+        <div class="grid grid-cols-2 items-center gap-4 text-center min-[420px]:grid-cols-3 sm:grid-cols-5 lg:grid-cols-9">
           @for (technology of technologies(); track technology.id) {
             <div class="tech-strip-item">
               @if (technology.iconClass) {

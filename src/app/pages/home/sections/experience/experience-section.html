@@ -1,5 +1,5 @@
-<section id="experiencia" class="mx-auto max-w-7xl px-5 py-8 sm:px-6 lg:px-8">
-  <div class="surface-panel rounded-lg p-6 lg:p-8">
+<section id="experiencia" class="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
+  <div class="surface-panel rounded-lg p-4 sm:p-6 lg:p-8">
     <h2 class="text-sm font-black uppercase tracking-wide text-[#EF4444]">Experiencia profesional</h2>
 
     <div class="mt-8 space-y-6">
@@ -12,9 +12,9 @@
             }
           </div>
           <div>
-            <h3 class="text-xl font-black text-[#F3F4F6]">{{ item.role }} - {{ item.company }}</h3>
+            <h3 class="break-words text-lg font-black text-[#F3F4F6] sm:text-xl">{{ item.role }} - {{ item.company }}</h3>
             @if (descriptionLines(item.description).length) {
-              <ul class="mt-3 list-disc space-y-2 pl-5 text-sm leading-7 text-[#9CA3AF]">
+              <ul class="mt-3 list-disc space-y-2 pl-5 text-sm leading-6 text-[#9CA3AF] sm:leading-7">
                 @for (line of descriptionLines(item.description); track line) {
                   <li>{{ line }}</li>
                 }
