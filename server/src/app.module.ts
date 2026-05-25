@@ -1,0 +1,34 @@
+import { Module } from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
+import { ConfigModule } from '@nestjs/config';
+import { AuthModule } from './auth/auth.module';
+import { AuthGuard } from './auth/auth.guard';
+import { ExperienceModule } from './experience/experience.module';
+import { HealthModule } from './health/health.module';
+import { PortfolioModule } from './portfolio/portfolio.module';
+import { ProjectsModule } from './projects/projects.module';
+import { SupabaseModule } from './supabase/supabase.module';
+import { TechnologiesModule } from './technologies/technologies.module';
+
+@Module({
+  imports: [
+    ConfigModule.forRoot({
+      envFilePath: ['.env'],
+      isGlobal: true,
+    }),
+    SupabaseModule,
+    AuthModule,
+    ExperienceModule,
+    HealthModule,
+    PortfolioModule,
+    ProjectsModule,
+    TechnologiesModule,
+  ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
+  ],
+})
+export class AppModule {}

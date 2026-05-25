@@ -18,6 +18,11 @@
     color: #f3f4f6;
     font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     text-rendering: optimizeLegibility;
+    animation: backgroundBreath 14s ease-in-out infinite alternate;
+  }
+
+  * {
+    box-sizing: border-box;
   }
 
   ::selection {
@@ -29,6 +34,13 @@
     color: inherit;
     text-decoration: none;
   }
+
+  img,
+  svg,
+  video,
+  canvas {
+    max-width: 100%;
+  }
 }
 
 @layer utilities {
@@ -36,6 +48,88 @@
     background: linear-gradient(180deg, rgba(17, 19, 24, 0.94), rgba(11, 11, 15, 0.94));
     border: 1px solid #1e2128;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
+  }
+
+  .scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 120;
+    height: 2px;
+    width: 100%;
+    transform-origin: left;
+    background: linear-gradient(90deg, #ef4444, #dc2626, #f87171);
+    box-shadow: 0 0 18px rgba(239, 68, 68, 0.55);
+  }
+
+  .cursor-glow {
+    pointer-events: none;
+    position: fixed;
+    z-index: 1;
+    width: 320px;
+    height: 320px;
+    border-radius: 9999px;
+    background: radial-gradient(circle, rgba(220, 38, 38, 0.18), rgba(220, 38, 38, 0.06) 34%, transparent 68%);
+    filter: blur(18px);
+    opacity: 0.8;
+    transition: transform 120ms ease-out;
+    will-change: transform;
+  }
+
+  .reveal-motion {
+    opacity: 0;
+    transform: translateY(28px);
+    filter: blur(8px);
+    transition:
+      opacity 620ms ease,
+      transform 620ms ease,
+      filter 620ms ease;
+  }
+
+  .reveal-motion.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+
+  .interactive-glow {
+    position: relative;
+    overflow: hidden;
+    transition:
+      border-color 260ms ease,
+      box-shadow 260ms ease,
+      transform 260ms ease;
+  }
+
+  .interactive-glow::before {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background:
+      radial-gradient(
+        320px circle at var(--glow-x, 50%) var(--glow-y, 50%),
+        rgba(239, 68, 68, 0.16),
+        transparent 42%
+      );
+    opacity: 0;
+    transition: opacity 260ms ease;
+  }
+
+  .interactive-glow:hover {
+    transform: translateY(-4px);
+    border-color: rgba(220, 38, 38, 0.72);
+    box-shadow: 0 22px 70px rgba(220, 38, 38, 0.14), 0 18px 50px rgba(0, 0, 0, 0.32);
+  }
+
+  .interactive-glow:hover::before {
+    opacity: 1;
+  }
+
+  .interactive-glow > * {
+    position: relative;
+    z-index: 1;
   }
 
   .red-glow {
@@ -49,11 +143,91 @@
 
   .tech-strip-item {
     min-width: 0;
-    transition: transform 180ms ease, color 180ms ease;
+    transition: transform 220ms ease, color 220ms ease, filter 220ms ease;
   }
 
   .tech-strip-item:hover {
-    transform: translateY(-2px);
+    transform: translateY(-3px) scale(1.04) rotate(-1deg);
+    filter: drop-shadow(0 0 14px rgba(239, 68, 68, 0.18));
+  }
+
+  /* Animations */
+  .fade-in-up {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.8s ease-out forwards;
+  }
+
+  .float-slow {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .pulse-slow {
+    animation: pulse 4s ease-in-out infinite;
+  }
+
+  @media (max-width: 639px) {
+    .float-slow,
+    .pulse-slow,
+    .cursor-glow {
+      animation: none;
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fade-in-up,
+    .float-slow,
+    .pulse-slow,
+    body,
+    .reveal-motion,
+    .interactive-glow,
+    .cursor-glow {
+      animation: none;
+      transition: none;
+      transform: none;
+      filter: none;
+    }
+
+    .reveal-motion {
+      opacity: 1;
+    }
+  }
+
+  @keyframes fadeInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 0.7;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.9;
+      transform: scale(1.05);
+    }
+  }
+
+  @keyframes backgroundBreath {
+    from {
+      background-position: 0 0;
+    }
+    to {
+      background-position: 24px -18px;
+    }
   }
 
   @media (min-width: 640px) {

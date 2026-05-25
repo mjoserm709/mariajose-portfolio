@@ -1,0 +1,334 @@
+<main class="min-h-screen bg-[#0B0B0F] px-4 py-5 text-[#F3F4F6] sm:px-5 sm:py-6">
+  <div class="mx-auto max-w-7xl">
+    <header class="flex flex-col gap-4 border-b border-[#1E2128] pb-4 md:flex-row md:items-center md:justify-between">
+      <div>
+        <p class="text-[0.68rem] font-black uppercase tracking-[0.18em] text-[#EF4444]">Admin</p>
+        <h1 class="mt-1 text-2xl font-black sm:text-3xl">Contenido</h1>
+        <p class="mt-1 text-sm text-[#9CA3AF]">
+          {{ activeModule() === 'projects' ? selectedProject()?.title || 'Gestiona proyectos, tecnologias e imagenes.' : 'Gestiona tu experiencia profesional.' }}
+        </p>
+      </div>
+      <button class="rounded-md border border-[#1E2128] px-4 py-2 text-sm font-semibold hover:border-[#DC2626]" type="button" (click)="logout()">Salir</button>
+    </header>
+
+    @if (message()) {
+      <p class="mt-5 rounded-md border border-[#1E2128] bg-[#111318] px-4 py-3 text-sm text-[#F3F4F6]">{{ message() }}</p>
+    }
+
+    <div class="mt-5 grid gap-5 lg:grid-cols-[220px_1fr]">
+      <aside class="rounded-lg border border-[#1E2128] bg-[#111318] p-2 lg:self-start">
+        <button class="flex w-full items-center justify-between rounded-md px-3 py-3 text-left text-sm font-bold transition hover:bg-[#1E2128]" type="button" (click)="showModule('projects')" [class.bg-[#1E2128]]="activeModule() === 'projects'" [class.text-[#EF4444]]="activeModule() === 'projects'">
+          Proyectos
+          <span class="text-xs text-[#9CA3AF]">{{ projects().length }}</span>
+        </button>
+        <button class="mt-1 flex w-full items-center justify-between rounded-md px-3 py-3 text-left text-sm font-bold transition hover:bg-[#1E2128]" type="button" (click)="showModule('experience')" [class.bg-[#1E2128]]="activeModule() === 'experience'" [class.text-[#EF4444]]="activeModule() === 'experience'">
+          Experiencia
+          <span class="text-xs text-[#9CA3AF]">{{ experience().length }}</span>
+        </button>
+      </aside>
+
+      <section class="min-w-0 rounded-lg border border-[#1E2128] bg-[#111318]">
+        <div class="border-b border-[#1E2128] p-3">
+          @if (activeModule() === 'projects') {
+            <div class="flex flex-wrap gap-2">
+              <button class="rounded-md px-3 py-2 text-sm font-semibold transition hover:bg-[#1E2128]" type="button" (click)="showSection('list')" [class.bg-[#1E2128]]="activeSection() === 'list'" [class.text-[#EF4444]]="activeSection() === 'list'">Listado</button>
+              <button class="rounded-md px-3 py-2 text-sm font-semibold transition hover:bg-[#1E2128]" type="button" (click)="showSection('details')" [class.bg-[#1E2128]]="activeSection() === 'details'" [class.text-[#EF4444]]="activeSection() === 'details'">Datos</button>
+              <button class="rounded-md px-3 py-2 text-sm font-semibold transition hover:bg-[#1E2128]" type="button" (click)="showSection('technologies')" [class.bg-[#1E2128]]="activeSection() === 'technologies'" [class.text-[#EF4444]]="activeSection() === 'technologies'">Tecnologias</button>
+              <button class="rounded-md px-3 py-2 text-sm font-semibold transition hover:bg-[#1E2128]" type="button" (click)="showSection('images')" [class.bg-[#1E2128]]="activeSection() === 'images'" [class.text-[#EF4444]]="activeSection() === 'images'">Imagenes</button>
+            </div>
+          }
+
+          @if (activeModule() === 'experience') {
+            <div class="flex flex-wrap gap-2">
+              <button class="rounded-md px-3 py-2 text-sm font-semibold transition hover:bg-[#1E2128]" type="button" (click)="showSection('experience-list')" [class.bg-[#1E2128]]="activeSection() === 'experience-list'" [class.text-[#EF4444]]="activeSection() === 'experience-list'">Listado</button>
+              <button class="rounded-md px-3 py-2 text-sm font-semibold transition hover:bg-[#1E2128]" type="button" (click)="resetExperienceForm()" [class.bg-[#1E2128]]="activeSection() === 'experience-form'" [class.text-[#EF4444]]="activeSection() === 'experience-form'">Nuevo empleo</button>
+            </div>
+          }
+        </div>
+
+      @if (activeSection() === 'list') {
+        <div class="border-b border-[#1E2128] px-5 py-4">
+          <h2 class="text-base font-black">Listado</h2>
+          <p class="mt-1 text-sm text-[#9CA3AF]">{{ isLoading() ? 'Cargando...' : projects().length + ' proyectos' }}</p>
+        </div>
+
+        <div class="divide-y divide-[#1E2128]">
+          @for (project of projects(); track project.id) {
+            <article class="grid gap-4 p-5 md:grid-cols-[1fr_auto] md:items-center">
+              <div>
+                <div class="flex flex-wrap items-center gap-2">
+                  <h3 class="text-xl font-black">{{ project.title }}</h3>
+                  <span class="rounded bg-[#1E2128] px-2 py-1 text-xs text-[#9CA3AF]">{{ project.status }}</span>
+                  @if (project.featured) {
+                    <span class="rounded bg-[#DC2626]/20 px-2 py-1 text-xs font-bold text-[#EF4444]">Destacado</span>
+                  }
+                </div>
+                <p class="mt-2 text-sm text-[#9CA3AF]">{{ project.shortDescription || project.slug }}</p>
+                <div class="mt-3 flex flex-wrap gap-2">
+                  @for (technology of project.technologies ?? []; track technology.id) {
+                    <span class="rounded bg-[#1E2128] px-2 py-1 text-xs text-[#F3F4F6]">{{ technology.name }}</span>
+                  }
+                  @if (project.images?.length) {
+                    <span class="rounded bg-[#1E2128] px-2 py-1 text-xs text-[#9CA3AF]">{{ project.images?.length }} imagenes</span>
+                  }
+                </div>
+              </div>
+              <div class="flex flex-wrap gap-2">
+                <button class="rounded-md border border-[#1E2128] px-3 py-2 text-sm font-semibold hover:border-[#DC2626]" type="button" (click)="selectProject(project)">Editar</button>
+                <button class="rounded-md border border-[#7F1D1D] px-3 py-2 text-sm font-semibold text-[#FCA5A5] hover:border-[#DC2626]" type="button" (click)="remove(project)">Eliminar</button>
+              </div>
+            </article>
+          } @empty {
+            <p class="p-5 text-sm text-[#9CA3AF]">No hay proyectos registrados.</p>
+          }
+        </div>
+      }
+
+      @if (activeSection() === 'details') {
+        <form class="p-5" [formGroup]="form" (ngSubmit)="save()">
+          <div class="flex flex-col gap-3 border-b border-[#1E2128] pb-5 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h2 class="text-lg font-black">{{ isEditing() ? 'Editar proyecto' : 'Nuevo proyecto' }}</h2>
+              <p class="mt-1 text-sm text-[#9CA3AF]">Define titulo, enlaces, estado y orden de publicacion.</p>
+            </div>
+            <button class="text-sm font-semibold text-[#EF4444]" type="button" (click)="resetForm()">Nuevo proyecto</button>
+          </div>
+
+          <div class="mt-5 grid gap-5 lg:grid-cols-2">
+            <label class="grid gap-2 text-sm font-semibold">Titulo
+              <input class="rounded-md border border-[#1E2128] bg-[#0B0B0F] px-3 py-2 outline-none focus:border-[#DC2626]" formControlName="title" />
+            </label>
+
+            <label class="grid gap-2 text-sm font-semibold">Slug
+              <input class="rounded-md border border-[#1E2128] bg-[#0B0B0F] px-3 py-2 outline-none focus:border-[#DC2626]" formControlName="slug" />
+            </label>
+
+            <label class="grid gap-2 text-sm font-semibold lg:col-span-2">Resumen
+              <textarea class="min-h-20 rounded-md border border-[#1E2128] bg-[#0B0B0F] px-3 py-2 outline-none focus:border-[#DC2626]" formControlName="shortDescription"></textarea>
+            </label>
+
+            <label class="grid gap-2 text-sm font-semibold lg:col-span-2">Descripcion
+              <textarea class="min-h-32 rounded-md border border-[#1E2128] bg-[#0B0B0F] px-3 py-2 outline-none focus:border-[#DC2626]" formControlName="description"></textarea>
+            </label>
+
+            <label class="grid gap-2 text-sm font-semibold">GitHub
+              <input class="rounded-md border border-[#1E2128] bg-[#0B0B0F] px-3 py-2 outline-none focus:border-[#DC2626]" formControlName="githubUrl" />
+            </label>
+
+            <label class="grid gap-2 text-sm font-semibold">Demo
+              <input class="rounded-md border border-[#1E2128] bg-[#0B0B0F] px-3 py-2 outline-none focus:border-[#DC2626]" formControlName="demoUrl" />
+            </label>
+
+            <label class="grid gap-2 text-sm font-semibold">Estado
+              <select class="rounded-md border border-[#1E2128] bg-[#0B0B0F] px-3 py-2 outline-none focus:border-[#DC2626]" formControlName="status">
+                <option value="published">Publicado</option>
+                <option value="draft">Borrador</option>
+              </select>
+            </label>
+
+            <label class="grid gap-2 text-sm font-semibold">Orden
+              <input class="rounded-md border border-[#1E2128] bg-[#0B0B0F] px-3 py-2 outline-none focus:border-[#DC2626]" type="number" formControlName="sortOrder" />
+            </label>
+
+            <label class="flex items-center gap-3 text-sm font-semibold lg:col-span-2">
+              <input class="h-4 w-4 accent-[#DC2626]" type="checkbox" formControlName="featured" />
+              Destacado
+            </label>
+          </div>
+
+          <div class="mt-6 flex flex-wrap gap-3">
+            <button class="rounded-md bg-[#DC2626] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#B91C1C] disabled:cursor-not-allowed disabled:opacity-60" type="submit" [disabled]="isSaving()">
+              {{ isSaving() ? 'Guardando...' : 'Guardar proyecto' }}
+            </button>
+            <button class="rounded-md border border-[#1E2128] px-5 py-3 text-sm font-semibold hover:border-[#DC2626]" type="button" (click)="showSection('list')">Volver al listado</button>
+          </div>
+        </form>
+      }
+
+      @if (activeSection() === 'technologies') {
+        <div class="grid gap-6 p-5 lg:grid-cols-2">
+          <section>
+            <h2 class="text-lg font-black">Crear tecnologia</h2>
+            <p class="mt-1 text-sm text-[#9CA3AF]">Registra una tecnologia reutilizable en proyectos.</p>
+            <form class="mt-5 grid gap-3" [formGroup]="newTechnologyForm" (ngSubmit)="createTechnology()">
+              <input class="rounded-md border border-[#1E2128] bg-[#0B0B0F] px-3 py-2 outline-none focus:border-[#DC2626]" formControlName="name" placeholder="Nombre" />
+              <input class="rounded-md border border-[#1E2128] bg-[#0B0B0F] px-3 py-2 outline-none focus:border-[#DC2626]" formControlName="category" placeholder="Categoria" />
+
+              <div class="rounded-md border border-[#1E2128] bg-[#0B0B0F] p-3">
+                <div class="flex items-center gap-3">
+                  <div class="grid h-12 w-12 place-items-center rounded border border-[#1E2128] text-3xl">
+                    @if (newTechnologyForm.value.iconClass) {
+                      <i [class]="newTechnologyForm.value.iconClass"></i>
+                    } @else {
+                      <span class="text-sm font-black text-[#EF4444]">MJ</span>
+                    }
+                  </div>
+                  <div class="min-w-0">
+                    <p class="text-sm font-black">Icono Devicon</p>
+                    <p class="truncate text-xs text-[#9CA3AF]">{{ newTechnologyForm.value.iconClass || 'Selecciona un icono del catalogo' }}</p>
+                  </div>
+                </div>
+
+                <input class="mt-3 w-full rounded-md border border-[#1E2128] bg-[#111318] px-3 py-2 outline-none focus:border-[#DC2626]" [value]="iconSearch()" (input)="iconSearch.set($any($event.target).value)" placeholder="Buscar icono" />
+
+                <div class="mt-3 grid max-h-72 grid-cols-3 gap-2 overflow-y-auto pr-1 sm:grid-cols-4">
+                  @for (icon of filteredDevicons(); track icon.className) {
+                    <button class="grid gap-2 rounded-md border border-[#1E2128] bg-[#111318] px-2 py-3 text-center transition hover:border-[#DC2626]" type="button" (click)="selectIcon(icon.className)" [class.border-[#DC2626]]="newTechnologyForm.value.iconClass === icon.className">
+                      <i class="text-3xl" [class]="icon.className"></i>
+                      <span class="truncate text-xs text-[#9CA3AF]">{{ icon.name }}</span>
+                    </button>
+                  }
+                </div>
+
+                <input class="mt-3 w-full rounded-md border border-[#1E2128] bg-[#111318] px-3 py-2 text-xs text-[#9CA3AF] outline-none focus:border-[#DC2626]" formControlName="iconClass" placeholder="Clase Devicon" />
+              </div>
+
+              <button class="rounded-md border border-[#1E2128] px-4 py-2 text-sm font-semibold hover:border-[#DC2626]" type="submit">Crear tecnologia</button>
+            </form>
+          </section>
+
+          <section>
+            <h2 class="text-lg font-black">Asociar a proyecto</h2>
+            <p class="mt-1 text-sm text-[#9CA3AF]">{{ selectedProject()?.title || 'Selecciona un proyecto desde el listado.' }}</p>
+            <form class="mt-5 grid gap-3" [formGroup]="technologyForm" (ngSubmit)="linkTechnology()">
+              <select class="rounded-md border border-[#1E2128] bg-[#0B0B0F] px-3 py-2 outline-none focus:border-[#DC2626]" formControlName="technologyId">
+                <option value="">Seleccionar tecnologia</option>
+                @for (technology of technologies(); track technology.id) {
+                  <option [value]="technology.id">{{ technology.name }}</option>
+                }
+              </select>
+              <button class="rounded-md bg-[#DC2626] px-4 py-2 text-sm font-bold text-white hover:bg-[#B91C1C]" type="submit">Asociar tecnologia</button>
+            </form>
+
+            <div class="mt-5 flex flex-wrap gap-2">
+              @for (technology of selectedProject()?.technologies ?? []; track technology.id) {
+                <button class="rounded bg-[#1E2128] px-3 py-2 text-xs font-semibold text-[#F3F4F6] hover:bg-[#3A1D1D]" type="button" (click)="unlinkTechnology(technology.id)">
+                  @if (technology.iconClass) {
+                    <i [class]="technology.iconClass"></i>
+                  }
+                  {{ technology.name }} ×
+                </button>
+              } @empty {
+                <p class="text-sm text-[#9CA3AF]">Este proyecto no tiene tecnologias asociadas.</p>
+              }
+            </div>
+          </section>
+        </div>
+      }
+
+      @if (activeSection() === 'images') {
+        <div class="grid gap-6 p-5 lg:grid-cols-[420px_1fr]">
+          <section>
+            <h2 class="text-lg font-black">Agregar imagen</h2>
+            <p class="mt-1 text-sm text-[#9CA3AF]">{{ selectedProject()?.title || 'Selecciona un proyecto desde el listado.' }}</p>
+            <form class="mt-5 grid gap-3" [formGroup]="imageForm" (ngSubmit)="addImage()">
+              <input class="rounded-md border border-[#1E2128] bg-[#0B0B0F] px-3 py-2 outline-none focus:border-[#DC2626]" formControlName="imageUrl" placeholder="https://..." />
+              <input class="rounded-md border border-[#1E2128] bg-[#0B0B0F] px-3 py-2 outline-none focus:border-[#DC2626]" formControlName="altText" placeholder="Texto alternativo" />
+              <input class="rounded-md border border-[#1E2128] bg-[#0B0B0F] px-3 py-2 outline-none focus:border-[#DC2626]" type="number" formControlName="sortOrder" placeholder="Orden" />
+              <button class="rounded-md bg-[#DC2626] px-4 py-2 text-sm font-bold text-white hover:bg-[#B91C1C]" type="submit">Agregar imagen</button>
+            </form>
+          </section>
+
+          <section>
+            <h2 class="text-lg font-black">Imagenes del proyecto</h2>
+            <div class="mt-5 grid gap-3">
+              @for (image of selectedProject()?.images ?? []; track image.id) {
+                <article class="grid grid-cols-[88px_1fr_auto] items-center gap-3 rounded-md border border-[#1E2128] bg-[#0B0B0F] p-2">
+                  <img class="h-16 w-22 rounded object-cover" [src]="imageUrl(image)" [alt]="imageAlt(image)" />
+                  <p class="min-w-0 truncate text-sm text-[#9CA3AF]">{{ imageAlt(image) }}</p>
+                  <button class="rounded border border-[#7F1D1D] px-2 py-1 text-xs font-semibold text-[#FCA5A5]" type="button" (click)="removeImage(image.id)">Eliminar</button>
+                </article>
+              } @empty {
+                <p class="text-sm text-[#9CA3AF]">Este proyecto no tiene imagenes.</p>
+              }
+            </div>
+          </section>
+        </div>
+      }
+
+      @if (activeSection() === 'experience-list') {
+        <div class="border-b border-[#1E2128] p-5">
+          <h2 class="text-lg font-black">Experiencia profesional</h2>
+          <p class="mt-1 text-sm text-[#9CA3AF]">{{ experience().length }} registros</p>
+        </div>
+
+        <div class="divide-y divide-[#1E2128]">
+          @for (item of experience(); track item.id) {
+            <article class="grid gap-4 p-5 md:grid-cols-[1fr_auto] md:items-center">
+              <div>
+                <div class="flex flex-wrap items-center gap-2">
+                  <h3 class="text-xl font-black">{{ item.role }}</h3>
+                  @if (item.current) {
+                    <span class="rounded bg-[#DC2626]/20 px-2 py-1 text-xs font-bold text-[#EF4444]">Actual</span>
+                  }
+                </div>
+                <p class="mt-2 text-sm text-[#9CA3AF]">{{ item.company }} | {{ experiencePeriod(item) }}</p>
+              </div>
+              <div class="flex flex-wrap gap-2">
+                <button class="rounded-md border border-[#1E2128] px-3 py-2 text-sm font-semibold hover:border-[#DC2626]" type="button" (click)="selectExperience(item)">Editar</button>
+                <button class="rounded-md border border-[#7F1D1D] px-3 py-2 text-sm font-semibold text-[#FCA5A5] hover:border-[#DC2626]" type="button" (click)="removeExperience(item)">Eliminar</button>
+              </div>
+            </article>
+          } @empty {
+            <p class="p-5 text-sm text-[#9CA3AF]">No hay experiencia registrada.</p>
+          }
+        </div>
+      }
+
+      @if (activeSection() === 'experience-form') {
+        <form class="p-5" [formGroup]="experienceForm" (ngSubmit)="saveExperience()">
+          <div class="flex flex-col gap-3 border-b border-[#1E2128] pb-5 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h2 class="text-lg font-black">{{ isEditingExperience() ? 'Editar empleo' : 'Nuevo empleo' }}</h2>
+              <p class="mt-1 text-sm text-[#9CA3AF]">Agrega cargos, fechas y descripcion para la seccion publica.</p>
+            </div>
+            <button class="text-sm font-semibold text-[#EF4444]" type="button" (click)="resetExperienceForm()">Nuevo empleo</button>
+          </div>
+
+          <div class="mt-5 grid gap-4 lg:grid-cols-2">
+            <label class="grid gap-2 text-sm font-semibold">Empresa
+              <input class="rounded-md border border-[#1E2128] bg-[#0B0B0F] px-3 py-2 outline-none focus:border-[#DC2626]" formControlName="company" />
+            </label>
+
+            <label class="grid gap-2 text-sm font-semibold">Rol
+              <input class="rounded-md border border-[#1E2128] bg-[#0B0B0F] px-3 py-2 outline-none focus:border-[#DC2626]" formControlName="role" />
+            </label>
+
+            <label class="grid gap-2 text-sm font-semibold lg:col-span-2">Descripcion
+              <textarea class="min-h-28 rounded-md border border-[#1E2128] bg-[#0B0B0F] px-3 py-2 outline-none focus:border-[#DC2626]" formControlName="description" placeholder="Una linea por punto de experiencia"></textarea>
+            </label>
+
+            <label class="grid gap-2 text-sm font-semibold">Fecha inicio
+              <input class="rounded-md border border-[#1E2128] bg-[#0B0B0F] px-3 py-2 outline-none focus:border-[#DC2626]" type="date" formControlName="startDate" />
+            </label>
+
+            <label class="grid gap-2 text-sm font-semibold">Fecha fin
+              <input class="rounded-md border border-[#1E2128] bg-[#0B0B0F] px-3 py-2 outline-none focus:border-[#DC2626]" type="date" formControlName="endDate" />
+            </label>
+
+            <label class="grid gap-2 text-sm font-semibold">Ubicacion
+              <input class="rounded-md border border-[#1E2128] bg-[#0B0B0F] px-3 py-2 outline-none focus:border-[#DC2626]" formControlName="location" />
+            </label>
+
+            <label class="grid gap-2 text-sm font-semibold">Orden
+              <input class="rounded-md border border-[#1E2128] bg-[#0B0B0F] px-3 py-2 outline-none focus:border-[#DC2626]" type="number" formControlName="sortOrder" />
+            </label>
+
+            <label class="flex items-center gap-3 text-sm font-semibold lg:col-span-2">
+              <input class="h-4 w-4 accent-[#DC2626]" type="checkbox" formControlName="current" />
+              Trabajo actual
+            </label>
+          </div>
+
+          <div class="mt-6 flex flex-wrap gap-3">
+            <button class="rounded-md bg-[#DC2626] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#B91C1C] disabled:cursor-not-allowed disabled:opacity-60" type="submit" [disabled]="isSaving()">
+              {{ isSaving() ? 'Guardando...' : 'Guardar empleo' }}
+            </button>
+            <button class="rounded-md border border-[#1E2128] px-5 py-3 text-sm font-semibold hover:border-[#DC2626]" type="button" (click)="showSection('experience-list')">Volver al listado</button>
+          </div>
+        </form>
+      }
+      </section>
+    </div>
+  </div>
+</main>
