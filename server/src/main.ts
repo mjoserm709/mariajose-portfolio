@@ -3,23 +3,33 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 
+function normalizeOrigin(origin: string) {
+  return origin.trim().replace(/\/$/, '');
+}
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const frontendUrls = process.env['FRONTEND_URL'] ?? 'http://localhost:4200,https://mariajose-portfolio.vercel.app';
   const allowedOrigins = frontendUrls
     .split(',')
-    .map((origin) => origin.trim())
+    .map(normalizeOrigin)
     .filter(Boolean);
 
   app.setGlobalPrefix('api');
   app.enableCors({
     origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
-      if (!origin || allowedOrigins.includes(origin)) {
+      const normalizedOrigin = origin ? normalizeOrigin(origin) : undefined;
+      const isAllowedVercelPreview =
+        normalizedOrigin?.endsWith('.vercel.app') && normalizedOrigin.includes('mariajose-portfolio');
+
+      if (!normalizedOrigin || allowedOrigins.includes(normalizedOrigin) || isAllowedVercelPreview) {
         callback(null, true);
       } else {
-        callback(new Error(`Origin ${origin} no permitido por CORS`));
+        callback(null, false);
       }
     },
+    allowedHeaders: ['Authorization', 'Content-Type'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   });
   app.useGlobalPipes(
     new ValidationPipe({
