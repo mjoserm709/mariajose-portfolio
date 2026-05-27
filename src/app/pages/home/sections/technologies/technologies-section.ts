@@ -12,6 +12,8 @@ export class TechnologiesSectionComponent implements OnInit {
   private readonly portfolioService = inject(PortfolioService);
 
   readonly technologies = signal<Technology[]>([]);
+  readonly isLoading = signal(true);
+  readonly hasError = signal(false);
   readonly stackGroups = computed(() => {
     const technologies = this.technologies();
 
@@ -52,9 +54,23 @@ export class TechnologiesSectionComponent implements OnInit {
   });
 
   ngOnInit() {
+    this.loadTechnologies();
+  }
+
+  loadTechnologies() {
+    this.isLoading.set(true);
+    this.hasError.set(false);
+
     this.portfolioService.findTechnologies().subscribe({
-      next: (technologies) => this.technologies.set(technologies),
-      error: () => this.technologies.set([]),
+      next: (technologies) => {
+        this.technologies.set(technologies);
+        this.isLoading.set(false);
+      },
+      error: () => {
+        this.technologies.set([]);
+        this.hasError.set(true);
+        this.isLoading.set(false);
+      },
     });
   }
 

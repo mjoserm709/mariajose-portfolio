@@ -14,9 +14,17 @@ export class ProjectsSectionComponent implements OnInit {
   private readonly allProjects = signal<Project[]>([]);
   readonly projects = signal<Project[]>([]);
   readonly isLoading = signal(true);
+  readonly hasError = signal(false);
   readonly showAllProjects = signal(false);
 
   ngOnInit() {
+    this.loadProjects();
+  }
+
+  loadProjects() {
+    this.isLoading.set(true);
+    this.hasError.set(false);
+
     this.portfolioService.findProjects().subscribe({
       next: (projects) => {
         this.allProjects.set(projects);
@@ -24,7 +32,9 @@ export class ProjectsSectionComponent implements OnInit {
         this.isLoading.set(false);
       },
       error: () => {
+        this.allProjects.set([]);
         this.projects.set([]);
+        this.hasError.set(true);
         this.isLoading.set(false);
       },
     });

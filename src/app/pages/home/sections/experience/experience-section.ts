@@ -14,6 +14,8 @@ export class ExperienceSectionComponent implements OnInit {
   private readonly initialDescriptionLineCount = 3;
 
   readonly experience = signal<Experience[]>([]);
+  readonly isLoading = signal(true);
+  readonly hasError = signal(false);
   readonly showAllExperience = signal(false);
   readonly expandedExperienceIds = signal<Set<string>>(new Set());
   readonly visibleExperience = computed(() =>
@@ -23,9 +25,23 @@ export class ExperienceSectionComponent implements OnInit {
   );
 
   ngOnInit() {
+    this.loadExperience();
+  }
+
+  loadExperience() {
+    this.isLoading.set(true);
+    this.hasError.set(false);
+
     this.portfolioService.getExperience().subscribe({
-      next: (experience) => this.experience.set(experience),
-      error: () => this.experience.set([]),
+      next: (experience) => {
+        this.experience.set(experience);
+        this.isLoading.set(false);
+      },
+      error: () => {
+        this.experience.set([]);
+        this.hasError.set(true);
+        this.isLoading.set(false);
+      },
     });
   }
 
