@@ -25,6 +25,7 @@ export class AdminProjectsComponent implements OnInit {
   readonly technologies = signal<Technology[]>([]);
   readonly selectedExperienceId = signal<string | null>(null);
   readonly selectedProjectId = signal<string | null>(null);
+  readonly selectedTechnologyId = signal<string | null>(null);
   readonly activeModule = signal<'projects' | 'experience'>('projects');
   readonly activeSection = signal<
     'list' | 'details' | 'technologies' | 'images' | 'experience-list' | 'experience-form'
@@ -35,6 +36,7 @@ export class AdminProjectsComponent implements OnInit {
   readonly iconSearch = signal('');
   readonly isEditing = computed(() => Boolean(this.selectedProjectId()));
   readonly isEditingExperience = computed(() => Boolean(this.selectedExperienceId()));
+  readonly isEditingTechnology = computed(() => Boolean(this.selectedTechnologyId()));
   readonly selectedProject = computed(
     () => this.projects().find((project) => project.id === this.selectedProjectId()) ?? null,
   );
@@ -46,14 +48,24 @@ export class AdminProjectsComponent implements OnInit {
     { name: 'JavaScript', className: 'devicon-javascript-plain colored' },
     { name: 'NestJS', className: 'devicon-nestjs-plain colored' },
     { name: 'Node.js', className: 'devicon-nodejs-plain colored' },
+    { name: 'Express', className: 'devicon-express-original' },
     { name: 'PostgreSQL', className: 'devicon-postgresql-plain colored' },
+    { name: 'MySQL', className: 'devicon-mysql-original colored' },
+    { name: 'MongoDB', className: 'devicon-mongodb-plain colored' },
+    { name: 'Redis', className: 'devicon-redis-plain colored' },
     { name: 'SQL Server', className: 'devicon-microsoftsqlserver-plain colored' },
     { name: 'Docker', className: 'devicon-docker-plain colored' },
+    { name: 'Kubernetes', className: 'devicon-kubernetes-plain colored' },
     { name: 'Git', className: 'devicon-git-plain colored' },
     { name: 'GitHub', className: 'devicon-github-original' },
+    { name: 'GitLab', className: 'devicon-gitlab-plain colored' },
     { name: 'Python', className: 'devicon-python-plain colored' },
+    { name: 'Django', className: 'devicon-django-plain colored' },
+    { name: 'FastAPI', className: 'devicon-fastapi-plain colored' },
     { name: 'PHP', className: 'devicon-php-plain colored' },
     { name: 'Laravel', className: 'devicon-laravel-original colored' },
+    { name: 'Java', className: 'devicon-java-plain colored' },
+    { name: 'Spring', className: 'devicon-spring-original colored' },
     { name: 'Bootstrap', className: 'devicon-bootstrap-plain colored' },
     { name: 'Tailwind CSS', className: 'devicon-tailwindcss-original colored' },
     { name: 'HTML5', className: 'devicon-html5-plain colored' },
@@ -61,12 +73,23 @@ export class AdminProjectsComponent implements OnInit {
     { name: 'Sass', className: 'devicon-sass-original colored' },
     { name: 'React', className: 'devicon-react-original colored' },
     { name: 'Vue', className: 'devicon-vuejs-plain colored' },
+    { name: 'Next.js', className: 'devicon-nextjs-original' },
+    { name: 'Nuxt', className: 'devicon-nuxtjs-plain colored' },
     { name: 'Vite', className: 'devicon-vitejs-plain colored' },
+    { name: 'Webpack', className: 'devicon-webpack-plain colored' },
     { name: 'Firebase', className: 'devicon-firebase-plain colored' },
     { name: 'Supabase', className: 'devicon-supabase-plain colored' },
+    { name: 'Azure', className: 'devicon-azure-plain colored' },
+    { name: 'AWS', className: 'devicon-amazonwebservices-plain-wordmark colored' },
+    { name: 'Netlify', className: 'devicon-netlify-plain colored' },
     { name: 'Vercel', className: 'devicon-vercel-original' },
     { name: 'Linux', className: 'devicon-linux-plain' },
+    { name: 'Ubuntu', className: 'devicon-ubuntu-plain colored' },
     { name: 'Windows', className: 'devicon-windows11-original colored' },
+    { name: 'Visual Studio', className: 'devicon-visualstudio-plain colored' },
+    { name: 'VS Code', className: 'devicon-vscode-plain colored' },
+    { name: 'Figma', className: 'devicon-figma-plain colored' },
+    { name: 'Postman', className: 'devicon-postman-plain colored' },
   ];
   readonly filteredDevicons = computed(() => {
     const search = this.iconSearch().trim().toLowerCase();
@@ -344,18 +367,65 @@ export class AdminProjectsComponent implements OnInit {
       return;
     }
 
-    this.projectsService.createTechnology(this.newTechnologyForm.getRawValue()).subscribe({
+    const selectedId = this.selectedTechnologyId();
+    const request = selectedId
+      ? this.projectsService.updateTechnology(selectedId, this.newTechnologyForm.getRawValue())
+      : this.projectsService.createTechnology(this.newTechnologyForm.getRawValue());
+
+    request.subscribe({
       next: () => {
-        this.toastService.success('Exito', 'Tecnologia creada correctamente.');
-        this.newTechnologyForm.reset({ name: '', iconClass: '', category: '' });
+        this.toastService.success(
+          'Exito',
+          selectedId ? 'Tecnologia actualizada correctamente.' : 'Tecnologia creada correctamente.',
+        );
+        this.resetTechnologyForm();
         this.loadTechnologies();
+        this.loadProjects();
       },
-      error: () => this.toastService.error('Error al guardar', 'No se pudo crear la tecnologia.'),
+      error: () => this.toastService.error('Error al guardar', 'No se pudo guardar la tecnologia.'),
     });
   }
 
   selectIcon(iconClass: string) {
     this.newTechnologyForm.patchValue({ iconClass });
+  }
+
+  selectTechnology(technology: Technology) {
+    this.selectedTechnologyId.set(technology.id);
+    this.newTechnologyForm.patchValue({
+      name: technology.name,
+      iconClass: technology.iconClass ?? '',
+      category: technology.category ?? '',
+    });
+  }
+
+  resetTechnologyForm() {
+    this.selectedTechnologyId.set(null);
+    this.newTechnologyForm.reset({ name: '', iconClass: '', category: '' });
+  }
+
+  removeTechnology(technology: Technology) {
+    const confirmed = window.confirm(`Eliminar ${technology.name}?`);
+
+    if (!confirmed) {
+      return;
+    }
+
+    this.projectsService.removeTechnology(technology.id).subscribe({
+      next: () => {
+        this.toastService.success('Exito', 'Tecnologia eliminada correctamente.');
+        if (this.selectedTechnologyId() === technology.id) {
+          this.resetTechnologyForm();
+        }
+        this.loadTechnologies();
+        this.loadProjects();
+      },
+      error: () =>
+        this.toastService.error(
+          'Error al eliminar',
+          'No se pudo eliminar la tecnologia. Revisa si esta asociada a proyectos.',
+        ),
+    });
   }
 
   selectExperience(experience: Experience) {

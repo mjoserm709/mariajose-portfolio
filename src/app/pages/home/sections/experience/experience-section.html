@@ -3,7 +3,33 @@
     <h2 class="text-sm font-black uppercase tracking-wide text-[#EF4444]">Experiencia profesional</h2>
 
     <div class="mt-8 space-y-6">
-      @for (item of experience(); track item.id) {
+      @if (isLoading()) {
+        @for (item of [1, 2]; track item) {
+          <article class="grid animate-pulse gap-6 border-b border-[#1E2128] pb-6 last:border-b-0 last:pb-0 lg:grid-cols-[230px_1fr] lg:items-start">
+            <div>
+              <div class="h-4 w-32 rounded bg-[#1E2128]"></div>
+              <div class="mt-3 h-6 w-16 rounded bg-[#1E2128]"></div>
+            </div>
+            <div>
+              <div class="h-6 max-w-md rounded bg-[#1E2128]"></div>
+              <div class="mt-4 space-y-3">
+                <div class="h-3 rounded bg-[#1E2128]"></div>
+                <div class="h-3 w-11/12 rounded bg-[#1E2128]"></div>
+                <div class="h-3 w-4/5 rounded bg-[#1E2128]"></div>
+              </div>
+            </div>
+          </article>
+        }
+      } @else if (hasError()) {
+        <article class="rounded-lg border border-[#7F1D1D] bg-[#111318] p-5">
+          <h3 class="text-base font-black text-[#F3F4F6]">No se pudo cargar la experiencia.</h3>
+          <p class="mt-2 text-sm leading-6 text-[#9CA3AF]">Puede ser una demora temporal del servidor. Intenta nuevamente en unos segundos.</p>
+          <button class="mt-4 rounded-md bg-[#DC2626] px-4 py-2 text-sm font-bold text-white transition hover:bg-[#B91C1C]" type="button" (click)="loadExperience()">
+            Reintentar
+          </button>
+        </article>
+      } @else {
+      @for (item of visibleExperience(); track item.id) {
         <article class="grid gap-6 border-b border-[#1E2128] pb-6 last:border-b-0 last:pb-0 lg:grid-cols-[230px_1fr] lg:items-start">
           <div>
             <p class="font-semibold text-[#EF4444]">{{ period(item) }}</p>
@@ -15,29 +41,32 @@
             <h3 class="break-words text-lg font-black text-[#F3F4F6] sm:text-xl">{{ item.role }} - {{ item.company }}</h3>
             @if (descriptionLines(item.description).length) {
               <ul class="mt-3 list-disc space-y-2 pl-5 text-sm leading-6 text-[#9CA3AF] sm:leading-7">
-                @for (line of descriptionLines(item.description); track line) {
+                @for (line of visibleDescriptionLines(item); track line) {
                   <li>{{ line }}</li>
                 }
               </ul>
+              @if (hasMoreDescription(item)) {
+                <button class="mt-3 text-sm font-semibold text-[#EF4444] hover:text-[#F3F4F6]" type="button" (click)="toggleExperienceDescription(item.id)">
+                  {{ isExperienceExpanded(item.id) ? 'Ver menos' : 'Ver mas' }}
+                </button>
+              }
             }
           </div>
         </article>
       } @empty {
-        <article class="grid gap-6 lg:grid-cols-[230px_1fr] lg:items-start">
-          <div>
-            <p class="font-semibold text-[#EF4444]">06/2025 - Actualidad</p>
-            <span class="mt-2 inline-flex rounded bg-[#DC2626]/20 px-3 py-1 text-xs font-bold text-[#EF4444]">Actual</span>
-          </div>
-          <div>
-            <h3 class="text-xl font-black text-[#F3F4F6]">Desarrollador Web - COHONDUCAFE</h3>
-            <ul class="mt-3 list-disc space-y-2 pl-5 text-sm leading-7 text-[#9CA3AF]">
-              <li>Migracion de aplicaciones legacy en ASP.NET MVC hacia .NET Core Web API + Angular.</li>
-              <li>Diseno y desarrollo de APIs REST seguras con autenticacion basada en tokens.</li>
-              <li>Construccion de interfaces dinamicas en Angular e integracion con servicios backend.</li>
-            </ul>
-          </div>
+        <article class="rounded-lg border border-[#1E2128] bg-[#111318] p-5">
+          <p class="text-sm text-[#9CA3AF]">Aun no hay experiencia registrada.</p>
         </article>
       }
+      }
     </div>
+
+    @if (!isLoading() && !hasError() && hasMoreExperience()) {
+      <div class="mt-6 flex justify-center">
+        <button class="rounded-md border border-[#1E2128] px-4 py-2 text-sm font-semibold text-[#F3F4F6] transition hover:border-[#DC2626] hover:text-[#EF4444]" type="button" (click)="toggleExperienceList()">
+          {{ showAllExperience() ? 'Ver menos experiencia' : 'Ver mas experiencia' }}
+        </button>
+      </div>
+    }
   </div>
 </section>

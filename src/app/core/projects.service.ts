@@ -70,6 +70,14 @@ export class ProjectsService {
     return this.http.post<Technology>(`${API_BASE_URL}/technologies`, technology);
   }
 
+  updateTechnology(id: string, technology: Partial<Omit<Technology, 'id'>>) {
+    return this.http.put<Technology>(`${API_BASE_URL}/technologies/${id}`, technology);
+  }
+
+  removeTechnology(id: string) {
+    return this.http.delete<{ id: string; deleted: boolean }>(`${API_BASE_URL}/technologies/${id}`);
+  }
+
   addImage(projectId: string, image: ProjectImagePayload) {
     return this.http.post<ProjectImage>(`${API_BASE_URL}/projects/${projectId}/images`, image);
   }

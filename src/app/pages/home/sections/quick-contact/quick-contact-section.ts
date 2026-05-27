@@ -11,4 +11,10 @@ export class QuickContactSectionComponent {
   private readonly homeDataService = inject(HomeDataService);
 
   readonly profile = computed(() => this.homeDataService.profile());
+  readonly isProfileLoading = computed(() => this.homeDataService.isProfileLoading());
+  readonly hasProfileError = computed(() => this.homeDataService.hasProfileError());
+
+  retryProfile() {
+    this.homeDataService.loadProfile();
+  }
 }
