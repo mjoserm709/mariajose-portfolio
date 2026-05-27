@@ -5,14 +5,21 @@ import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const allowedOrigins = (process.env['FRONTEND_URL'] ?? 'http://localhost:4200')
+  const frontendUrls = process.env['FRONTEND_URL'] ?? 'http://localhost:4200,https://mariajose-portfolio.vercel.app';
+  const allowedOrigins = frontendUrls
     .split(',')
     .map((origin) => origin.trim())
     .filter(Boolean);
 
   app.setGlobalPrefix('api');
   app.enableCors({
-    origin: allowedOrigins,
+    origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error(`Origin ${origin} no permitido por CORS`));
+      }
+    },
   });
   app.useGlobalPipes(
     new ValidationPipe({
