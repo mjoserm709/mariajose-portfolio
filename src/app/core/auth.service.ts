@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, signal } from '@angular/core';
 import { tap } from 'rxjs';
+import { API_BASE_URL } from './api.config';
 
 interface LoginResponse {
   user: {
@@ -22,7 +23,7 @@ export class AuthService {
   constructor(private readonly http: HttpClient) {}
 
   login(email: string, password: string) {
-    return this.http.post<LoginResponse>('/api/auth/login', { email, password }).pipe(
+    return this.http.post<LoginResponse>(`${API_BASE_URL}/auth/login`, { email, password }).pipe(
       tap((response) => {
         localStorage.setItem(this.tokenKey, response.session.accessToken);
         this.accessToken.set(response.session.accessToken);

@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Project, Technology } from './projects.service';
+import { API_BASE_URL } from './api.config';
 
 export interface Profile {
   id: string;
@@ -41,22 +42,22 @@ export class PortfolioService {
   constructor(private readonly http: HttpClient) {}
 
   findProjects() {
-    return this.http.get<Project[]>('/api/projects');
+    return this.http.get<Project[]>(`${API_BASE_URL}/projects`);
   }
 
   findTechnologies() {
-    return this.http.get<Technology[]>('/api/technologies');
+    return this.http.get<Technology[]>(`${API_BASE_URL}/technologies`);
   }
 
   getProfile() {
-    return this.http.get<Profile | null>('/api/portfolio/profile');
+    return this.http.get<Profile | null>(`${API_BASE_URL}/portfolio/profile`);
   }
 
   getExperience() {
-    return this.http.get<Experience[]>('/api/experience');
+    return this.http.get<Experience[]>(`${API_BASE_URL}/experience`);
   }
 
   getSkills() {
-    return this.http.get<Skill[]>('/api/portfolio/skills');
+    return this.http.get<Skill[]>(`${API_BASE_URL}/portfolio/skills`);
   }
 }
