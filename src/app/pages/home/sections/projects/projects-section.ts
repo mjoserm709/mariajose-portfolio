@@ -11,13 +11,16 @@ import { GlowCardDirective } from '../../../../shared/animations/glow-card.direc
 export class ProjectsSectionComponent implements OnInit {
   private readonly portfolioService = inject(PortfolioService);
 
+  private readonly allProjects = signal<Project[]>([]);
   readonly projects = signal<Project[]>([]);
   readonly isLoading = signal(true);
+  readonly showAllProjects = signal(false);
 
   ngOnInit() {
     this.portfolioService.findProjects().subscribe({
       next: (projects) => {
-        this.projects.set(projects.filter((project) => project.featured));
+        this.allProjects.set(projects);
+        this.updateVisibleProjects();
         this.isLoading.set(false);
       },
       error: () => {
@@ -30,5 +33,17 @@ export class ProjectsSectionComponent implements OnInit {
   projectImage(project: Project) {
     const image = project.images?.[0];
     return image?.imageUrl ?? image?.image_url ?? '';
+  }
+
+  toggleProjectsView() {
+    this.showAllProjects.update((showAllProjects) => !showAllProjects);
+    this.updateVisibleProjects();
+  }
+
+  private updateVisibleProjects() {
+    const projects = this.allProjects();
+    this.projects.set(
+      this.showAllProjects() ? projects : projects.filter((project) => project.featured),
+    );
   }
 }

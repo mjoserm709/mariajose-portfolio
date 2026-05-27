@@ -12,12 +12,12 @@
         {{ profile()?.bio || 'Ingeniera en Sistemas y Fullstack Developer especializada en .NET Core, Angular y SQL Server. Construyo APIs REST, frontends dinamicos y soluciones empresariales escalables orientadas a negocio.' }}
       </p>
        <div class="mt-7 grid grid-cols-1 gap-3 min-[420px]:flex min-[420px]:flex-wrap sm:mt-9">
-         <a class="inline-flex min-h-11 w-full items-center justify-center rounded-md bg-[#DC2626] px-5 py-3 text-sm font-bold text-white transition-all duration-300 ease-in-out hover:bg-[#B91C1C] min-[420px]:w-auto" [href]="profile()?.cvUrl || 'mailto:mjoserm95@gmail.com'">Descargar CV</a>
+         <a class="inline-flex min-h-11 w-full items-center justify-center rounded-md bg-[#DC2626] px-5 py-3 text-sm font-bold text-white transition-all duration-300 ease-in-out hover:bg-[#B91C1C] min-[420px]:w-auto" [href]="profile()?.cvUrl || '/cv-maria-jose-ramirez.pdf'" download="cv-maria-jose-ramirez.pdf">Descargar CV</a>
          <a class="inline-flex min-h-11 w-full items-center justify-center rounded-md border border-[#1E2128] bg-[#111318] px-5 py-3 text-sm font-semibold text-[#F3F4F6] transition-all duration-300 ease-in-out hover:border-[#DC2626] min-[420px]:w-auto" [href]="'mailto:' + (profile()?.email || 'mjoserm95@gmail.com')">Contactar</a>
        </div>
        <div class="mt-7 flex max-w-full flex-wrap gap-x-5 gap-y-3 text-sm font-semibold text-[#9CA3AF] sm:mt-9">
-         <a class="transition-all duration-300 ease-in-out hover:text-[#EF4444]" [href]="profile()?.githubUrl || 'https://github.com/'" target="_blank" rel="noopener">GitHub</a>
-         <a class="transition-all duration-300 ease-in-out hover:text-[#EF4444]" [href]="profile()?.linkedinUrl || 'https://linkedin.com/'" target="_blank" rel="noopener">LinkedIn</a>
+         <a class="transition-all duration-300 ease-in-out hover:text-[#EF4444]" [href]="profile()?.githubUrl || 'https://github.com/mjoserm709'" target="_blank" rel="noopener">GitHub</a>
+         <a class="transition-all duration-300 ease-in-out hover:text-[#EF4444]" [href]="profile()?.linkedinUrl || 'https://www.linkedin.com/in/mjramirez95'" target="_blank" rel="noopener">LinkedIn</a>
          <a class="transition-all duration-300 ease-in-out hover:text-[#EF4444]" [href]="'mailto:' + (profile()?.email || 'mjoserm95@gmail.com')">Email</a>
        </div>
     </div>

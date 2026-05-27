@@ -1,23 +1,35 @@
 <section id="habilidades" class="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
   <div appGlowCard class="surface-panel rounded-lg p-4 sm:p-6">
-    <div class="grid gap-6 lg:grid-cols-[160px_1fr] lg:items-center">
-      <h2 class="text-sm font-black uppercase tracking-wide text-[#EF4444]">Tecnologias</h2>
-      <div class="min-w-0">
-        <div class="grid grid-cols-2 items-center gap-4 text-center min-[420px]:grid-cols-3 sm:grid-cols-5 lg:grid-cols-9">
-          @for (technology of technologies(); track technology.id) {
-            <div class="tech-strip-item rounded-md p-2">
-              @if (technology.iconClass) {
-                <i class="tech-icon" [class]="technology.iconClass"></i>
-              }
-              <p class="mt-3 text-sm text-[#9CA3AF]">{{ technology.name }}</p>
-            </div>
-          } @empty {
-            <div class="tech-strip-item rounded-md p-2"><i class="devicon-dotnetcore-plain colored tech-icon"></i><p class="mt-3 text-sm text-[#9CA3AF]">.NET Core</p></div>
-            <div class="tech-strip-item rounded-md p-2"><i class="devicon-angularjs-plain colored tech-icon"></i><p class="mt-3 text-sm text-[#9CA3AF]">Angular</p></div>
-            <div class="tech-strip-item rounded-md p-2"><i class="devicon-postgresql-plain colored tech-icon"></i><p class="mt-3 text-sm text-[#9CA3AF]">PostgreSQL</p></div>
-          }
-        </div>
+    <div class="flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
+      <div>
+        <h2 class="text-sm font-black uppercase tracking-wide text-[#EF4444]">Tech Stack</h2>
+        <p class="mt-2 max-w-2xl text-sm leading-6 text-[#9CA3AF]">Tecnologias utilizadas en desarrollo.</p>
       </div>
+      <span class="text-xs font-bold uppercase tracking-wide text-[#6B7280]">Frontend / Backend / Data / DevOps</span>
+    </div>
+
+    <div class="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      @for (group of stackGroups(); track group.title) {
+        <article class="rounded-lg border border-[#1E2128] bg-[#111318] p-4">
+          <div class="border-b border-[#1E2128] pb-4">
+            <h3 class="text-base font-black text-[#F3F4F6]">{{ group.title }}</h3>
+            <p class="mt-2 text-xs leading-5 text-[#9CA3AF]">{{ group.description }}</p>
+          </div>
+
+          <div class="mt-4 flex flex-wrap gap-2">
+            @for (technology of group.items; track technology.name) {
+              <span class="inline-flex min-h-9 items-center gap-2 rounded-md bg-[#1E2128] px-3 py-2 text-xs font-semibold text-[#F3F4F6]">
+                @if (technology.iconClass) {
+                  <i class="text-base" [class]="technology.iconClass"></i>
+                } @else {
+                  <span class="grid size-4 place-items-center rounded bg-[#DC2626]/20 text-[0.58rem] font-black text-[#EF4444]">{{ technology.name.charAt(0) }}</span>
+                }
+                {{ technology.name }}
+              </span>
+            }
+          </div>
+        </article>
+      }
     </div>
   </div>
 </section>
